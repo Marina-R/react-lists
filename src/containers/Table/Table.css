@@ -1,0 +1,14 @@
+.table {
+    overflow: auto;
+    width: 1065px;
+    height: 375px;
+    position: absolute;
+    top: calc((100vh - 375px) / 2);
+    left: calc((100vw - 1065px) / 2);
+    border-radius: 5px;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .6);
+}
+
+.table-columns {
+    display: flex;
+}

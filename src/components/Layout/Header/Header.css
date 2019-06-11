@@ -1,0 +1,16 @@
+.header {
+    display: flex;
+    justify-content: flex-start;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    border-bottom: 1px solid #000;
+}
+
+.header-item {
+    font-size: 20px;
+    font-weight: 600;
+    padding: 10px 0;
+    margin-left: 10px;
+    width: 179px;
+}

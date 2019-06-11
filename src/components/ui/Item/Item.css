@@ -1,0 +1,18 @@
+.list-item {
+    color: #457afb;
+    list-style: none;
+    font-size: 18px;
+    padding: 17px 19px;
+    cursor: pointer;
+}
+
+.list-item:hover {
+    background-color: #eaeaea;
+    border-radius: 5px;
+}
+
+.list-item.selected {
+    color: #fff;
+    background-color: #457afb;
+    border-radius: 5px;
+}
