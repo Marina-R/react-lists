@@ -12,6 +12,7 @@ function Item({ label, onClickHandler, selected }) {
 
 Item.propTypes = {
     label: PropTypes.string,
+    selected: PropTypes.bool,
     onClickHandler: PropTypes.func.isRequired,
 };
 

@@ -1,26 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import Item from '../ui/Item/Item';
+import Item from '../Item/Item';
 import './List.css';
 
-function List({ data, onClick }) {
-    const [ selected, setSelected ] = useState(0, []);
-    const handleClick = index => setSelected(index);
-
-    const handler = (e, index) => {
-        if (selected !== index)
-            handleClick(index);
-        return onClick(e);
-    };
-
+function List({ data, onClick, selectedValue }) {
     return (
         <ul className='list'>
-            {data.length && data.map((item, index) =>
+            {data.length && data.map((label, index) =>
                 <Item
                     key={index}
-                    label={item}
-                    selected={index === selected}
-                    onClickHandler={(e) => handler(e, index)}
+                    label={label}
+                    selected={label === selectedValue}
+                    onClickHandler={() => onClick(label)}
                 />
             )}
         </ul>
@@ -30,6 +21,7 @@ function List({ data, onClick }) {
 List.propTypes = {
     data: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     onClick: PropTypes.func.isRequired,
+    selectedValue: PropTypes.string.isRequired,
 };
 
 export default List;

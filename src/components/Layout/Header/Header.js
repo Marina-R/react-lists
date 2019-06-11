@@ -1,5 +1,4 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
 import columns from '../../../utils/content/columns';
 import './Header.css';
 
@@ -11,9 +10,5 @@ function Header() {
         </header>
     );
 }
-
-Header.propTypes = {
-
-};
 
 export default Header;
