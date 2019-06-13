@@ -1,11 +1,16 @@
 import React from 'react';
+import Geocode from 'react-geocode';
+
 import Header from '../../components/Layout/Header/Header';
 import List from '../../components/List/List';
-import MapWithMarker from '../Map';
+import MapWithMarker from '../../components/Map';
 import { prepareOptions, parseAddress } from '../../utils/helpers';
 import './Table.css';
 
-//TODO: use Redux; find better way to handle selections;
+//TODO:
+// 1. use Redux;
+// 2. Split logic into different containers, so for ex. countries wont re-render on city click;
+// 3. Fix Google Maps API restrictions
 class Table extends React.PureComponent {
     state = {
         sortedCountries: [],
@@ -14,40 +19,33 @@ class Table extends React.PureComponent {
         country: '',
         city: '',
         company: '',
+        position: {
+            lat: -34.397, //Random values for testing purposes
+            lng: 150.644
+        }
     };
 
     componentWillMount() {
         const countries = prepareOptions('Country');
         const cities = prepareOptions('City', 'Country', countries[0]);
         const companies = prepareOptions('CompanyName', 'City', cities[0]);
-        const address = parseAddress(companies[0]);
 
         this.setState({
             sortedCountries: countries,
             sortedCities: cities,
             sortedCompanies: companies,
-            country: countries[0],
-            city: cities[0],
-            company: companies[0],
-            mapAddress: address,
         });
+        Geocode.setApiKey('AIzaSyAetFJ6vLep_cjVElUcKNsriWkzUlSMsG0');
     }
 
     prepareCities = input => this.setState({ sortedCities: prepareOptions('City', 'Country', input) });
     prepareCompanies = input => this.setState({ sortedCompanies: prepareOptions('CompanyName', 'City', input) });
-
-    fetchCompanies = city => {
-        const companies = prepareOptions('CompanyName', 'City', city);
-        this.prepareCompanies(city);
-        this.setState({ company: companies[0] });
-        this.setState({ mapAddress: parseAddress(companies[0]) });
-    };
+    fetchCompanies = city => this.prepareCompanies(city);
 
     handleCountrySelect = name => {
         this.setState({ country: name });
         const cities = prepareOptions('City', 'Country', name);
         this.prepareCities(name);
-        this.setState({ city: cities[0] });
         this.fetchCompanies(cities[0]);
     };
 
@@ -57,12 +55,26 @@ class Table extends React.PureComponent {
     };
 
     handleCompanySelect = name => {
-        this.setState({ company: name});
-        this.setState({ mapAddress: parseAddress(name) });
+        this.setState({company: name});
+        const address = parseAddress(name);
+        this.setState({ mapAddress: address }, this.handleMapUpdate(address));
+    };
+
+    handleMapUpdate = address => {
+        Geocode.fromAddress(address).then(
+            response => {
+                const {lat, lng} = response.results[0].geometry.location;
+                this.setState({
+                    position: { lat: lat, lng: lng }
+                });
+                console.log('lat, lng', lat, lng);
+            },
+            error => console.error('ERROR', error)
+        );
     };
 
     render() {
-        const { sortedCountries, sortedCities, sortedCompanies, city, country, company, mapAddress } = this.state;
+        const { sortedCountries, sortedCities, sortedCompanies, city, country, company, mapAddress, position } = this.state;
 
         return (
             <section className='table'>
@@ -72,11 +84,12 @@ class Table extends React.PureComponent {
                     <List data={sortedCities} selectedValue={city} onClick={this.handleCitySelect} />
                     <List data={sortedCompanies} selectedValue={company} onClick={this.handleCompanySelect} />
                     <MapWithMarker
-                        googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAetFJ6vLep_cjVElUcKNsriWkzUlSMsG0&v=3.exp&libraries=geometry,drawing,places"
+                        googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyACtFWeVQlkY4odTUdwsmu24DzVWAJ3sFo&v=3.exp&libraries=geometry,drawing,places"
                         loadingElement={<div style={{height: `100%`}}/>}
                         containerElement={<div style={{height: `325px`, width: `500px`}}/>}
                         mapElement={<div style={{height: `100%`}}/>}
                         address={mapAddress}
+                        position={position}
                     />
                 </div>
             </section>
