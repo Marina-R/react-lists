@@ -67,7 +67,6 @@ class Table extends React.PureComponent {
                 this.setState({
                     position: { lat: lat, lng: lng }
                 });
-                console.log('lat, lng', lat, lng);
             },
             error => console.error('ERROR', error)
         );
